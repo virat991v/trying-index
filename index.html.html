@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyan Sahitya - Sustainable Education Marketplace</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .text-clip-gradient {
+            background-image: linear-gradient(45deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #10b981;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: #e2e8f0;
+        }
+        /* Ensure the main content stays below the header */
+        .sticky-header-padding {
+            padding-top: 4rem; /* Adjust based on header height */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Application Container -->
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <!-- Header/Navigation Bar -->
+        <header class="bg-white shadow-md sticky top-0 z-10">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.652.658 3.167 1.745 4.192M12 6.253C13.168 5.477 14.792 5 16.5 5A6.5 6.5 0 0120 11.5c0 1.652-.658 3.167-1.745 4.192"></path></svg>
+                    <span class="text-2xl font-extrabold text-gray-800 tracking-tight">Gyan Sahitya</span>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="navigate('hero')" class="text-gray-600 hover:text-emerald-600 font-medium transition duration-150">Home</button>
+                    <button onclick="navigate('marketplace')" class="text-gray-600 hover:text-emerald-600 font-medium transition duration-150">Marketplace</button>
+                    <button onclick="navigate('postItem')" class="text-gray-600 hover:text-emerald-600 font-medium transition duration-150">Sell / Donate</button>
+                    <button onclick="navigate('community')" class="text-gray-600 hover:text-emerald-600 font-medium transition duration-150">Community</button>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 font-medium transition duration-150">Blog</a>
+                </div>
+
+                <!-- Auth/Menu -->
+                <div class="flex items-center space-x-3">
+                    <button id="auth-button" onclick="navigate('login')" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        Login/Sign up
+                    </button>
+                    <!-- Mobile Menu Button (Hamburger) -->
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 focus:outline-none" aria-label="Toggle menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden pb-2 bg-white border-t border-gray-100">
+                <button onclick="navigate('hero')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50">Home</button>
+                <button onclick="navigate('marketplace')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50">Marketplace</button>
+                <button onclick="navigate('postItem')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50">Sell / Donate</button>
+                <button onclick="navigate('community')" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50">Community</button>
+                <a href="#" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50">Blog</a>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 sticky-header-padding">
+
+            <!-- Global Message/Status Box -->
+            <div id="message-box" class="fixed top-20 right-4 p-4 rounded-lg shadow-xl text-white hidden z-50"></div>
+
+            <!-- Global User ID Display (MANDATORY for multi-user apps) -->
+            <div id="user-id-display" class="fixed bottom-4 left-4 text-xs p-2 bg-gray-800 text-white rounded-lg shadow-lg">
+                User ID: Loading...
+            </div>
+
+            <!-- Hero Section (Default View) -->
+            <section id="hero-section" class="view">
+                <div class="max-w-5xl mx-auto text-center py-20 md:py-32">
+                    <p class="text-sm font-semibold text-emerald-600 uppercase tracking-wider mb-3">The Sustainable Education Hub</p>
+                    <h1 class="text-6xl md:text-8xl font-extrabold mb-6 leading-tight">
+                        <span class="text-clip-gradient">Recycle Knowledge.</span> <br class="hidden sm:block"> Empower Minds.
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                        A sustainable marketplace for textbooks, notes, and educational tools. **Reduce waste. Reuse knowledge. Rethink education.**
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button onclick="navigate('marketplace')" class="px-8 py-3 bg-emerald-500 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-emerald-600 transition duration-300 transform hover:scale-105">
+                            Start Buying
+                        </button>
+                        <button onclick="navigate('postItem')" class="px-8 py-3 bg-blue-500 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-blue-600 transition duration-300 transform hover:scale-105">
+                            Sell Your Materials
+                        </button>
+                        <button onclick="navigate('community')" class="px-8 py-3 bg-white text-gray-800 text-lg font-bold rounded-xl border border-gray-300 hover:bg-gray-50 transition duration-300">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marketplace Section (Hidden by default) -->
+            <section id="marketplace-section" class="view hidden max-w-7xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-8 border-b pb-2">The Marketplace: Find Your Gear</h2>
+                
+                <!-- Search and Filter Bar -->
+                <div class="bg-white p-6 rounded-xl shadow-lg mb-8 grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <input type="text" id="search-input" oninput="filterListings()" placeholder="Search for books, guides, or instruments..." class="col-span-1 md:col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                    
+                    <select id="subject-filter" onchange="filterListings()" class="p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                        <option value="">Subject (All)</option>
+                        <option value="Math">Mathematics</option>
+                        <option value="Science">Science/Physics</option>
+                        <option value="History">History</option>
+                        <option value="CS">Computer Science</option>
+                        <option value="Unspecified">Unspecified</option>
+                    </select>
+                    
+                    <select id="course-filter" onchange="filterListings()" class="p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                        <option value="">Course (All)</option>
+                        <option value="B.Tech">B.Tech</option>
+                        <option value="BSc">B.Sc</option>
+                        <option value="HighSchool">High School</option>
+                        <option value="Unspecified">Unspecified</option>
+                    </select>
+                    
+                    <button onclick="filterListings()" class="p-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150">
+                        Apply Filters
+                    </button>
+                </div>
+
+                <!-- Listings Grid -->
+                <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Listings will be injected here by JavaScript -->
+                    <p class="text-center col-span-full text-gray-500 py-10" id="loading-listings">Loading listings in real-time...</p>
+                </div>
+            </section>
+
+            <!-- Post an Item Section (Hidden by default) -->
+            <section id="postItem-section" class="view hidden max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-2xl">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6 text-clip-gradient">Post Your Material</h2>
+                <p class="text-gray-600 mb-8">It's easy! Put up your used textbooks, notes, or instruments in minutes to give them a second life and earn some cash or goodwill. (Looks like **OLX** but for education!)</p>
+
+                <form id="post-item-form" onsubmit="handlePostItem(event)">
+                    
+                    <div class="space-y-6">
+                        <!-- Item Title -->
+                        <div>
+                            <label for="item-title" class="block text-sm font-medium text-gray-700 mb-1">Item Title</label>
+                            <input type="text" id="item-title" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500" placeholder="e.g., 'Thermodynamics Textbook by P.K. Nag (5th Ed)'">
+                        </div>
+
+                        <!-- Category & Transaction Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="item-category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select id="item-category" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                                    <option value="">Select Category</option>
+                                    <option value="Textbook">Used Textbook</option>
+                                    <option value="Notes">Notes/Guides</option>
+                                    <option value="Instrument">Scientific Instrument</option>
+                                    <option value="Digital">Digital Resource</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="transaction-type" class="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
+                                <select id="transaction-type" onchange="togglePrice(this.value)" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                                    <option value="Sell">Sell</option>
+                                    <option value="Donate">Donate (Free)</option>
+                                    <option value="Trade">Trade/Exchange</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Price Field -->
+                        <div id="price-field">
+                            <label for="item-price" class="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                            <input type="number" id="item-price" min="0" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500" placeholder="e.g., 500">
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label for="item-description" class="block text-sm font-medium text-gray-700 mb-1">Description (Condition, Subject, Course, etc.)</label>
+                            <textarea id="item-description" rows="4" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500" placeholder="e.g., Excellent condition, few highlights. Subject: Mechanical Engineering, Course: B.Tech 3rd Semester."></textarea>
+                        </div>
+
+                        <!-- Image Upload (Mockup) -->
+                        <div>
+                            <label for="item-image" class="block text-sm font-medium text-gray-700 mb-1">Upload Photo (For Preview only, actual file upload not supported)</label>
+                            <input type="file" id="item-image" accept="image/*" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="mt-8 w-full px-4 py-3 bg-emerald-500 text-white text-xl font-bold rounded-xl shadow-md hover:bg-emerald-600 transition duration-300">
+                        List Item Now
+                    </button>
+                </form>
+            </section>
+
+            <!-- Community & Impact Section (Hidden by default) -->
+            <section id="community-section" class="view hidden max-w-7xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4 border-b pb-2">Our Impact: Reduce, Reuse, Rethink</h2>
+                <p class="text-xl text-gray-600 mb-12">See how Gyan Sahitya is creating a circular economy in education and supporting students.</p>
+
+                <!-- Impact Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-emerald-500">
+                        <div class="text-6xl font-extrabold text-emerald-500" id="stat-items">12,500+</div>
+                        <p class="text-xl text-gray-600 mt-2">Items Recycled</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-blue-500">
+                        <div class="text-6xl font-extrabold text-blue-500" id="stat-co2">75T</div>
+                        <p class="text-xl text-gray-600 mt-2">Estimated CO₂ Saved</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-yellow-500">
+                        <div class="text-6xl font-extrabold text-yellow-500" id="stat-beneficiaries">₹3.5M+</div>
+                        <p class="text-xl text-gray-600 mt-2">Student Savings & Earnings</p>
+                    </div>
+                </div>
+
+                <!-- User Stories -->
+                <h3 class="text-3xl font-bold text-gray-800 mb-6">User Stories: How We Helped</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-gray-300">
+                        <p class="italic text-gray-700 mb-4">"I saved over ₹5000 this semester buying used books through Gyan Sahitya. It made my tuition affordable and the books were in great condition!"</p>
+                        <p class="font-semibold text-emerald-600">- Anjali S., B.Sc. Student</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-gray-300">
+                        <p class="italic text-gray-700 mb-4">"Selling my old competitive exam guides was super quick. I used the money to buy a new study lamp. Great platform for sustainable income!"</p>
+                        <p class="font-semibold text-emerald-600">- Rohan K., Engineering Graduate</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Login/Signup Portal (Mockup) -->
+            <section id="login-section" class="view hidden max-w-md mx-auto bg-white p-8 rounded-xl shadow-2xl">
+                <h2 class="text-4xl font-bold text-gray-800 mb-6 text-center">Join Gyan Sahitya</h2>
+                <form>
+                    <!-- Role Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">I am a:</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="role" value="Buyer" checked class="form-radio text-emerald-500">
+                                <span class="ml-2 text-gray-700">Buyer</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="role" value="Seller" class="form-radio text-emerald-500">
+                                <span class="ml-2 text-gray-700">Seller</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="role" value="Educator" class="form-radio text-emerald-500">
+                                <span class="ml-2 text-gray-700">Educator</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Email/Password Mockup -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="you@university.edu">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="password" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" onclick="mockLogin(event)" class="mt-6 w-full px-4 py-3 bg-blue-500 text-white text-lg font-bold rounded-xl shadow-md hover:bg-blue-600 transition duration-300">
+                        Sign Up / Log In
+                    </button>
+                    <p class="text-center text-sm text-gray-500 mt-4">Student verification is optional but builds trust in the community.</p>
+                </form>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white p-8 mt-12">
+            <div class="max-w-7xl mx-auto flex flex-wrap justify-between">
+                <div class="w-full md:w-1/4 mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-3 text-emerald-400">Gyan Sahitya</h3>
+                    <p class="text-sm text-gray-400">Recycle Knowledge. Empower Minds. A mission for sustainable education.</p>
+                </div>
+                <div class="w-1/2 md:w-1/4 mb-6 md:mb-0">
+                    <h4 class="font-semibold mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><button onclick="navigate('marketplace')" class="hover:text-emerald-400">Start Buying</button></li>
+                        <li><button onclick="navigate('postItem')" class="hover:text-emerald-400">Sell Materials</button></li>
+                        <li><a href="#" class="hover:text-emerald-400">Blog</a></li>
+                        <li><a href="#" class="hover:text-emerald-400">Admin Dashboard (Placeholder)</a></li>
+                    </ul>
+                </div>
+                <div class="w-1/2 md:w-1/4 mb-6 md:mb-0">
+                    <h4 class="font-semibold mb-3">Support</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-emerald-400">FAQ</a></li>
+                        <li><a href="#" class="hover:text-emerald-400">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-emerald-400">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-4 mt-6 text-center text-sm text-gray-500">
+                &copy; 2025 Gyan Sahitya. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <!-- Firebase and Application Logic -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, onSnapshot, collection, query, where, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables provided by the Canvas environment
+        let app;
+        let db;
+        let auth;
+        let userId = 'loading...';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        const MESSAGE_BOX = document.getElementById('message-box');
+        const USER_ID_DISPLAY = document.getElementById('user-id-display');
+        const LISTINGS_GRID = document.getElementById('listings-grid');
+        const LOADING_TEXT = document.getElementById('loading-listings');
+
+        // --- Utility Functions ---
+
+        /**
+         * Displays a temporary notification message on the screen.
+         * @param {string} message The message to display.
+         * @param {string} type 'success' or 'error' for styling.
+         */
+        const showMessage = (message, type = 'success') => {
+            MESSAGE_BOX.textContent = message;
+            MESSAGE_BOX.className = `fixed top-20 right-4 p-4 rounded-xl shadow-2xl text-white transition-all duration-300 z-50 transform translate-x-0 ${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`;
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                MESSAGE_BOX.className = 'fixed top-20 right-4 p-4 rounded-xl shadow-2xl text-white hidden z-50';
+            }, 3000);
+        };
+
+        /**
+         * Authenticates the user and sets up the Firestore listener.
+         */
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is missing. Data persistence will not work.");
+                    // Show a message to the user as well
+                    showMessage("Database not initialized. Functionality is limited.", 'error');
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // Set Firestore logging to error to minimize console output
+                setLogLevel('error');
+
+                // 1. Authenticate using custom token or anonymously
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // 2. Set up Auth State Listener
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        USER_ID_DISPLAY.textContent = `User ID: ${userId}`;
+                        console.log("Firebase Auth Ready. User ID:", userId);
+                        
+                        // Start listening for listings once authenticated
+                        setupListingsListener();
+                    } else {
+                        userId = crypto.randomUUID(); // Fallback for unauthenticated state
+                        USER_ID_DISPLAY.textContent = `User ID (Anon): ${userId}`;
+                        console.log("Signed out/Anonymous. Using generated ID:", userId);
+                        setupListingsListener(); // Still try to load public data
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                showMessage(`Firebase setup failed: ${error.message}`, 'error');
+            }
+        };
+
+        // --- Navigation and UI State Management ---
+
+        /**
+         * Switches the active view (section) in the single-page application.
+         * @param {string} targetId The ID of the section to show (e.g., 'marketplace', 'postItem').
+         */
+        window.navigate = (targetId) => {
+            document.querySelectorAll('.view').forEach(section => {
+                section.classList.add('hidden');
+            });
+            const targetSection = document.getElementById(targetId + '-section');
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // If navigating to marketplace, ensure listings are filtered and displayed
+                if (targetId === 'marketplace') {
+                    filterListings();
+                }
+            } else {
+                console.error('Navigation target not found:', targetId);
+            }
+        };
+
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Toggle price field visibility based on transaction type
+        window.togglePrice = (type) => {
+            const priceField = document.getElementById('price-field');
+            const priceInput = document.getElementById('item-price');
+            if (type === 'Sell') {
+                priceField.classList.remove('hidden');
+                priceInput.required = true;
+                priceInput.value = priceInput.value || 50; // Default price
+            } else {
+                priceField.classList.add('hidden');
+                priceInput.required = false;
+                priceInput.value = 0;
+            }
+        };
+
+
+        // --- Firestore Operations ---
+        
+        let allListings = [];
+        
+        /**
+         * Defines the Firestore collection path based on the App ID for public data.
+         */
+        const getListingsCollectionRef = () => {
+            if (!db) {
+                console.error("Firestore DB is not initialized.");
+                return null;
+            }
+            // Public data path: /artifacts/{appId}/public/data/listings
+            return collection(db, `artifacts/${appId}/public/data/listings`);
+        };
+
+
+        /**
+         * Sets up a real-time listener for all marketplace listings.
+         */
+        const setupListingsListener = () => {
+            const listingsRef = getListingsCollectionRef();
+            if (!listingsRef) return;
+
+            const q = query(listingsRef);
+
+            // onSnapshot provides real-time updates
+            onSnapshot(q, (snapshot) => {
+                const newAllListings = [];
+                snapshot.forEach((doc) => {
+                    newAllListings.push({ id: doc.id, ...doc.data() });
+                });
+                
+                allListings = newAllListings;
+                console.log("Real-time listings updated. Total:", allListings.length);
+                
+                // Hide loading text now that data is loaded
+                if (LOADING_TEXT) LOADING_TEXT.classList.add('hidden');
+
+                // Re-apply current filters to show the new data
+                filterListings();
+            }, (error) => {
+                console.error("Error listening to listings:", error);
+                if (LOADING_TEXT) LOADING_TEXT.textContent = "Failed to load listings. Please check console for errors.";
+            });
+        };
+
+        /**
+         * Renders the listings on the Marketplace page based on a filtered array.
+         * @param {Array} listings Array of listing objects to render.
+         */
+        const renderListings = (listings) => {
+            LISTINGS_GRID.innerHTML = ''; // Clear previous listings
+            
+            if (listings.length === 0) {
+                LISTINGS_GRID.innerHTML = `<p class="text-center col-span-full text-gray-500 py-10">No items found matching your criteria. Try adjusting the filters!</p>`;
+                return;
+            }
+
+            listings.forEach(item => {
+                const badgeColor = item.type === 'Donate' ? 'bg-green-100 text-green-700' : 
+                                   item.type === 'Trade' ? 'bg-yellow-100 text-yellow-700' : 
+                                   'bg-gray-100 text-gray-700';
+                
+                const priceDisplay = item.type === 'Sell' 
+                    ? `<span class="text-2xl font-extrabold text-emerald-600">₹${item.price.toLocaleString('en-IN')}</span>` 
+                    : `<span class="text-lg font-bold text-blue-600">${item.type}</span>`;
+
+                const card = `
+                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100">
+                        <!-- Image Placeholder -->
+                        <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-500 font-semibold text-sm border-b border-gray-200">
+                            <!-- Placeholder image URL: 300x192 -->
+                            <img src="https://placehold.co/300x192/4ade80/ffffff?text=${item.category}" alt="${item.title}" onerror="this.onerror=null;this.src='https://placehold.co/300x192/4ade80/ffffff?text=Image+Unavailable'" class="w-full h-full object-cover"/>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800 truncate leading-tight">${item.title}</h3>
+                                <span class="px-3 py-1 ${badgeColor} text-xs font-semibold rounded-full whitespace-nowrap">${item.type}</span>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 h-10 overflow-hidden mb-3">${item.description.substring(0, 70)}...</p>
+                            
+                            <div class="flex justify-between items-center mb-4 pt-2 border-t border-gray-100">
+                                ${priceDisplay}
+                                <span class="text-sm text-gray-600 font-medium">${item.subject || 'General'}</span>
+                            </div>
+
+                            <button class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150">
+                                View Details (Seller: ${item.sellerId.substring(0, 8)}...)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                LISTINGS_GRID.innerHTML += card;
+            });
+        };
+
+        /**
+         * Filters and sorts the global listings array based on the current filter inputs.
+         */
+        window.filterListings = () => {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const subject = document.getElementById('subject-filter').value;
+            const course = document.getElementById('course-filter').value;
+
+            let filtered = allListings.filter(item => {
+                // Ensure text fields exist and convert to string for safety
+                const titleText = (item.title || "").toLowerCase();
+                const descriptionText = (item.description || "").toLowerCase();
+                const subjectText = item.subject || 'Unspecified';
+                const courseText = item.course || 'Unspecified';
+
+                // Text search checks title AND description
+                const textMatch = titleText.includes(search) || descriptionText.includes(search);
+                
+                // Filter matches
+                const subjectMatch = !subject || subjectText === subject;
+                const courseMatch = !course || courseText === course;
+
+                return textMatch && subjectMatch && courseMatch;
+            });
+
+            // CRITICAL UX IMPROVEMENT: Sort by timestamp (newest first)
+            // Firestore rules prevent sorting on the query, so we sort client-side.
+            filtered.sort((a, b) => b.timestamp - a.timestamp);
+
+            renderListings(filtered);
+        };
+
+
+        /**
+         * Handles the form submission to post a new item to Firestore.
+         */
+        window.handlePostItem = async (event) => {
+            event.preventDefault();
+            
+            if (!db) {
+                showMessage("Database not ready. Please wait for initialization.", 'error');
+                return;
+            }
+
+            const title = document.getElementById('item-title').value;
+            const category = document.getElementById('item-category').value;
+            const type = document.getElementById('transaction-type').value;
+            // Use 0 if not selling, otherwise parse float
+            const price = type === 'Sell' ? parseFloat(document.getElementById('item-price').value) : 0;
+            const description = document.getElementById('item-description').value;
+
+            // Simple data extraction for filtering purposes (Subject and Course are not explicitly separate fields in the form, so we extract from description)
+            const subjectMatch = description.match(/Subject:\s*([^,.\n]+)/i);
+            const courseMatch = description.match(/Course:\s*([^,.\n]+)/i);
+            
+            // Clean up extracted values
+            const subjectExtracted = subjectMatch ? subjectMatch[1].trim() : 'Unspecified';
+            const courseExtracted = courseMatch ? courseMatch[1].trim() : 'Unspecified';
+            
+            const itemData = {
+                title: title,
+                category: category,
+                type: type,
+                price: price,
+                description: description,
+                // Assign extracted values for filtering
+                subject: subjectExtracted, 
+                course: courseExtracted,
+                sellerId: userId,
+                timestamp: Date.now()
+            };
+
+            const listingsRef = getListingsCollectionRef();
+
+            try {
+                // Add the document to the 'listings' collection (Public Data)
+                await addDoc(listingsRef, itemData);
+                
+                // Success feedback and UI reset
+                showMessage(`Successfully listed "${title}" for ${type}! Giving knowledge a new life.`, 'success');
+                document.getElementById('post-item-form').reset();
+                navigate('marketplace'); // Redirect to marketplace to see the new item
+                
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showMessage(`Failed to list item: ${error.message}`, 'error');
+            }
+        };
+
+        /**
+         * Mock login handler for the Login/Signup section.
+         */
+        window.mockLogin = (event) => {
+            event.preventDefault();
+            // This is just a mockup for the UI/UX demonstration.
+            const email = document.getElementById('email').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            showMessage(`Success! Mock Login for ${role}: ${email}. Welcome to Gyan Sahitya!`, 'success');
+            navigate('hero');
+        }
+
+        // --- Initialization ---
+        window.onload = initializeFirebase;
+
+    </script>
+</body>
+</html>
+ 
